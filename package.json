@@ -1,10 +1,17 @@
 {
-  "name": "check-for-state",
-  "version": "1.0.0",
-  "description": "",
+  "name": "location-parser",
+  "version": "0.0.1",
+  "description": "Parse a city, state and zip from a somewhat-structured string",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/.bin/mocha tests/test.js"
+  },
+  "bugs": {
+    "url": "https://github.com/pjsinco/location-parser/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pjsinco/location-parser"
   },
   "author": "pjs",
   "license": "ISC",
