@@ -16,7 +16,9 @@
   "author": "pjs",
   "license": "ISC",
   "dependencies": {
-    "madison": "^1.0.1",
+    "madison": "^1.0.1"
+  },
+  "devDependencies": {
     "mocha": "^2.4.5"
   }
 }
