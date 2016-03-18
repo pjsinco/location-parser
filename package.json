@@ -1,0 +1,15 @@
+{
+  "name": "check-for-state",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "pjs",
+  "license": "ISC",
+  "dependencies": {
+    "madison": "^1.0.1",
+    "mocha": "^2.4.5"
+  }
+}
