@@ -298,8 +298,12 @@ describe('parseLocation', function() {
     loc = parser.parseLocation("las vegas, new mexico");
     assert(loc.city = "las vegas");
     assert(loc.state = "NM");
+    assert(loc.zip == undefined);
 
-
+    loc = parser.parseLocation("green, ks");
+    assert(loc.city = "green");
+    assert(loc.state = "ks");
+    assert(loc.zip == undefined);
   });
 });
 
