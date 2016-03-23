@@ -8,7 +8,7 @@ describe('tokenize', function() {
     assert(t[0] == '');
   });
 
-  it('should return return 1 item', function() {
+  it('should return 1 item', function() {
     var t = parser.tokenize('chicago');
     assert(t.length == 1);
 
@@ -22,8 +22,14 @@ describe('tokenize', function() {
     assert(t.length == 1);
   });
 
-  it('should return return 2 items', function() {
+  it('should return 2 items', function() {
     var t = parser.tokenize('chicago illinois');
+    assert(t.length == 2);
+
+    var t = parser.tokenize('chicago, illinois');
+    assert(t.length == 2);
+
+    var t = parser.tokenize('chicago,illinois');
     assert(t.length == 2);
 
     var t = parser.tokenize('    chicago illinois');
@@ -42,15 +48,19 @@ describe('tokenize', function() {
   it('should return items with no spaces anywhere', function () {
     var t = parser.tokenize('las vegas new mexico');
     var withSpaces = t.filter(function(d) { return d.match(/\s/g); });
-    assert(withSpaces.length === 0);
+    assert(withSpaces.length == 0);
 
     var t = parser.tokenize(' las vegas new mexico ');
     var withSpaces = t.filter(function(d) { return d.match(/\s/g); });
-    assert(withSpaces.length === 0);
+    assert(withSpaces.length == 0);
+
+    var t = parser.tokenize('las vegas,new mexico');
+    var withSpaces = t.filter(function(d) { return d.match(/\s/g); });
+    assert(withSpaces.length == 0);
 
     var t = parser.tokenize('  las      vegas    new   mexico     ');
     var withSpaces = t.filter(function(d) { return d.match(/\s/g); });
-    assert(withSpaces.length === 0);
+    assert(withSpaces.length == 0);
   });
 
 });
@@ -59,15 +69,15 @@ describe('lastToken', function() {
 
   it('should return the last token', function() {
     var last = parser.lastToken(['chicago', 'illinois']);
-    assert(last === 'illinois');
+    assert(last == 'illinois');
 
     var last = parser.lastToken(['chicago']);
-    assert(last === 'chicago');
+    assert(last == 'chicago');
   });
 
   it('should return null when given an empty array', function() {
     var last = parser.lastToken([]);
-    assert(last === null);
+    assert(last == null);
   });
 
 });
@@ -77,15 +87,15 @@ describe('lastTwoTokens', function() {
   it('should return the last 2 tokens when given at least 2 tokens', function() {
     var loc = ['las', 'vegas', 'new', 'mexico'];
     var lastTwo = parser.lastTwoTokens(loc);
-    assert(lastTwo.length === 2);
-    assert(lastTwo[0] === 'new');
-    assert(lastTwo[1] === 'mexico');
+    assert(lastTwo.length == 2);
+    assert(lastTwo[0] == 'new');
+    assert(lastTwo[1] == 'mexico');
   });
 
   it('should return null when given an array with length less than 2', function() {
     var loc = ['chicago'];
     var lastTwo = parser.lastTwoTokens(loc);
-    assert(lastTwo === null);
+    assert(lastTwo == null);
   });
 
 });
@@ -94,15 +104,19 @@ describe('pinchState', function() {
 
   it('should return original value in rest if a state is not found', function() {
     var result = parser.pinchState('chicago, miaslkj');
-    assert(result.state == '');
+    assert(result.state.length == 0);
     assert(result.rest == 'chicago, miaslkj');
 
     var result = parser.pinchState('illinois, chicago');
-    assert(result.state == '');
+    assert(result.state.length == 0);
     assert(result.rest == 'illinois, chicago');
 
+    var result = parser.pinchState('illinois,chicago');
+    assert(result.state.length == 0);
+    assert(result.rest == 'illinois,chicago');
+
     var result = parser.pinchState('illinois new jersey illinois xissouri');
-    assert(result.state == '');
+    assert(result.state.length == 0);
     assert(result.rest == 'illinois new jersey illinois xissouri');
   });
 
@@ -114,6 +128,10 @@ describe('pinchState', function() {
       assert(result.rest == 'chicago');
 
       var result = parser.pinchState('selby, sd');
+      assert(result.state == 'SD');
+      assert(result.rest == 'selby');
+
+      var result = parser.pinchState('selby,sd');
       assert(result.state == 'SD');
       assert(result.rest == 'selby');
 
@@ -147,6 +165,10 @@ describe('pinchState', function() {
       assert(result.state == 'IL');
       assert(result.rest == 'chicago');
 
+      var result = parser.pinchState('chicago,illinois');
+      assert(result.state == 'IL');
+      assert(result.rest == 'chicago');
+
       var result = parser.pinchState('   chicago   ,  illinois   ');
       assert(result.state == 'IL');
       assert(result.rest == 'chicago');
@@ -162,6 +184,7 @@ describe('pinchState', function() {
 
     it('should find a state at the end of the string', function() {
       assert(parser.pinchState("chicago Illinois").state == "IL");
+      assert(parser.pinchState("chicago,Illinois").state == "IL");
       assert(parser.pinchState("chicago Illinois").rest == 'chicago');
       assert(parser.pinchState("selby south Dakota").state == "SD");
       assert(parser.pinchState("selby south Dakota").rest == "selby");
@@ -204,6 +227,8 @@ describe('pinchState', function() {
     it('should find a state name when value repeats state name', function() {
       assert(parser.pinchState("new york new york").state == "NY");
       assert(parser.pinchState("new york new york").rest == "new york");
+      assert(parser.pinchState("new york,new york").state == "NY");
+      assert(parser.pinchState("new york,new york").rest == "new york");
     });
 
     it('should not care about extra spaces', function() {
@@ -225,43 +250,19 @@ describe('pinchState', function() {
       assert(parser.pinchState("      new  york    new    york  ").rest == "new york");
     });
 
-
-
-
   });
-
-//  describe('abbreviated state names', function() {
-//
-//    it('should find a state without a comma', function() {
-//      assert(parser.pinchState("hope virginia") == "VA");
-//    });
-//
-//  });
-
-
-  //it('should return only 1 value', function() {
-    //assert(parser.pinchState('hope virginia').length === 2);
-  //});
 
 });
 
 describe('getStateAbbrev', function() {
 
   it('should return an abbreviation when given a full state', function() {
-    assert(parser.getStateAbbrev('illinois') === 'IL');
-    assert(parser.getStateAbbrev('Illinois') === 'IL');
-    assert(parser.getStateAbbrev('IllInOis') === 'IL');
-    assert(parser.getStateAbbrev('  IllInOis ') === 'IL');
+    assert(parser.getStateAbbrev('illinois') == 'IL');
+    assert(parser.getStateAbbrev('Illinois') == 'IL');
+    assert(parser.getStateAbbrev('IllInOis') == 'IL');
+    assert(parser.getStateAbbrev('  IllInOis ') == 'IL');
   });
 
-});
-
-describe('hasComma', function() {
-  it('should return true when value has a comma', function() {
-    assert(parser.hasComma('chicago, il') == true);
-    assert(parser.hasComma('chicago,') == true);
-    assert(parser.hasComma(' chicago , ') == true);
-  });
 });
 
 describe('pinchZip', function() {
@@ -295,14 +296,29 @@ describe('parseLocation', function() {
     assert(loc.state == "IL");
     assert(loc.zip == undefined);
 
-    loc = parser.parseLocation("las vegas, new mexico");
-    assert(loc.city = "las vegas");
-    assert(loc.state = "NM");
+    var loc = parser.parseLocation("chicago,il");
+    assert(loc.city == "chicago");
+    assert(loc.state == "IL");
     assert(loc.zip == undefined);
 
-    loc = parser.parseLocation("green, ks");
-    assert(loc.city = "green");
-    assert(loc.state = "ks");
+    var loc = parser.parseLocation("las vegas, new mexico");
+    assert(loc.city == "las vegas");
+    assert(loc.state == "NM");
+    assert(loc.zip == undefined);
+
+    var loc = parser.parseLocation("las vegas,new mexico");
+    assert(loc.city == "las vegas");
+    assert(loc.state == "NM");
+    assert(loc.zip == undefined);
+
+    var loc = parser.parseLocation("green, ks");
+    assert(loc.city == "green");
+    assert(loc.state == "KS");
+    assert(loc.zip == undefined);
+
+    var loc = parser.parseLocation("st. louis,mo");
+    assert(loc.city == "st louis");
+    assert(loc.state == "MO");
     assert(loc.zip == undefined);
   });
 });

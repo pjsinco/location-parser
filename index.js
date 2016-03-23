@@ -23,22 +23,6 @@ module.exports = {
   },
 
   /**
-   * Determines if value has only 1 comma
-   *
-   */
-  hasValidComma: function(value) {
-    return value.match(/,/g).length === 1;
-  },
-
-  /**
-   * Determines if value has a comma
-   *
-   */
-  hasComma: function(value) {
-    return Boolean (value.match(/,/g));
-  },
-
-  /**
    * Split into array of tokens.
    *
    */
@@ -101,8 +85,8 @@ module.exports = {
   },
 
   strip: function(value) {
-    var spaceStripped = value.replace(/\s+/gm, ' ').trim();
-    var punctStripped = spaceStripped.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '').trim();
+    var commaSpaceStripped = value.replace(/\s+|,/gm, ' ').trim();
+    var punctStripped = commaSpaceStripped.replace(/[.\/#!$%\^&\*;:{}=\-_`~()]/g, '').trim();
     var withStragglersGrouped = punctStripped.replace(/(\w)\s(\w)$/g, '$1$2');
     return withStragglersGrouped.replace(/\s{2,}/g, ' ');
   },
