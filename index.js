@@ -1,5 +1,4 @@
 var querystring = require('querystring');
-var url = require('url');
 var madison = require('madison');
 var states = madison.states;
 
