@@ -5,11 +5,13 @@ var states = madison.states;
 
 module.exports = {
 
+  /* NOT USED */
   hasZip: function(searchLocation) {
     var matches = searchLocation.match(/\d+/g);
     return matches && matches.length > 0;
   },
 
+  /* NOT USED */
   getStateAbbrev: function(fullStateName) {
     var stateAbbrev;
 
@@ -31,34 +33,11 @@ module.exports = {
     return stripped.toLowerCase().trim().split(' ');
   },
 
-  splitByComma: function(value) {
-    return;
-  },
-
-  /**
-   * Return array of tokens *not* containing the last token
-   *
-   */
-  allButLastToken: function(tokens) {
-    var length = tokens.length;
-    
-    //return tokens(0, )
-  },
-
-  /**
-   * Return array of tokens *not* containing last 2 tokens
-   *
-   */
-  allButLastTwoTokens: function(tokens) {
-
-  },
-
   /**
    * Return the last token from an array of tokens
    *
    */
   lastToken: function(tokens) {
-
     if (tokens.length === 0) { 
       return null;
     }
@@ -167,33 +146,80 @@ module.exports = {
     
   },
 
-  pinchCity: function(value) {
 
+  /**
+   * Transform common city abbreviations:
+   *   St. -> Saint
+   *   Mt. -> Mount
+   *   Ft. -> Fort
+   *
+   */
+  transformCity(city) {
+    
+    if (city.match(/^st\b/gi)) {
+      return city.replace(/^(st)\b/gi, 'Saint');
+    } else if (city.match(/^mt\b/gi)) {
+      return city.replace(/^(mt)\b/gi, 'Mount');
+    } else if (city.match(/^ft\b/gi)) {
+      return city.replace(/^(ft)\b/gi, 'Fort');
+    }
+
+    return city;
   },
 
   pinchZip: function(value) {
     var stripped = this.strip(value);
     var tokens = this.tokenize(stripped);
-    var zip, rest, matches;
+    var zip, notZip, rest, matches;
 
     for (var i = 0, l = tokens.length; i < l; i ++) {
-      var matches = tokens[i].match(/\b(\d{5})\b/g, '$1');
+      var matches = tokens[i].match(/\d{5}$/g);
       if (matches && matches.length === 1) {
-        zip = matches[0];
-        tokens.splice(i, 1);
+        if (matches[0] === tokens[i]) {
+          if (matches[0].length === 5) {
+            zip = matches[0];
+            tokens.splice(i, 1);
+          }
+          break;
+        } else { // we have some nondigits at the front
+          // zip goes to front of zipTokens
+          var zipString = tokens[i].replace(/^(.*)(\d{5}$)/gi, '$2 $1');
+          var zipTokens = this.tokenize(zipString);
+          zip = zipTokens[0];
+          notZip = zipTokens[1];
+          tokens.splice(i, 1);
+          break;
+        }
       }
     }
 
-    return {
-      zip: zip,
-      rest: tokens.join(' ')
-    };
+    if (notZip) {
+      tokens.push(notZip);
+    } 
+
+    rest = tokens.join(' ');
+
+    //if (zip && zip.length === 5) {
+      return {
+        zip: zip,
+        rest: rest
+      };
+    //} else {
+    //  return {
+    //    rest: null,
+    //    rest: stripped
+    //  };
+    //}
+
   },
 
   /**
    * @param {string} value
+   * @param {boolean} resolveCityAlias - whether to transform St. to Saint, etc.
    */
-  parseLocation: function(value) {
+  parseLocation: function(value, resolveCityAlias) {
+
+    var resolveCity = resolveCityAlias || false;
 
     var pinchedZip = this.pinchZip(value);
 
@@ -206,7 +232,8 @@ module.exports = {
     var pinchedState = this.pinchState(pinchedZip.rest);
 
     return {
-      city: pinchedState.rest,
+      city: (resolveCity ? this.transformCity(pinchedState.rest) :
+        pinchedState.rest),
       state: pinchedState.state,
       zip: zip
     };

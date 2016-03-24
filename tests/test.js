@@ -1,6 +1,42 @@
 var assert = require('assert');
 var parser = require('./../index');
 
+describe('strip', function() {
+  it('should remove punctuation', function() {
+    var stripped = parser.strip("St. Louis, Mo.");
+    assert(stripped == "St Louis Mo");
+  });
+
+  it('should put a space after a commma with no space after', function() {
+    var stripped = parser.strip("St. Louis,Mo.");
+    assert(stripped == "St Louis Mo");
+  });
+
+});
+
+describe.skip('transformCity', function() {
+
+  it('should change st to saint', function() {
+    var city = parser.transformCity("St Louis");
+    assert(city == "Saint Louis");
+
+    var city = parser.transformCity("st louis");
+    assert(city == "Saint louis");
+  });
+
+  it('should change mt to mount', function() {
+  });
+
+  it('should change mt to mount', function() {
+  });
+
+  it('should only find an alias at the beginning of a string', function() {
+  });
+
+  it('should only find an alias at the beginning of a string', function() {
+  });
+});
+
 describe('tokenize', function() {
 
   it('should return an array with an empty string when given an empty string', function() {
@@ -267,7 +303,7 @@ describe('getStateAbbrev', function() {
 
 describe('pinchZip', function() {
 
-  it('should find a 5-digit zip', function() {
+  it('should find a 5-digit zip at the end', function() {
     var result = parser.pinchZip('Boston, MA 02134');
     assert(result.zip == '02134');
 
@@ -275,16 +311,11 @@ describe('pinchZip', function() {
     assert(result.zip == '02134');
   });
 
-  it.skip('should see only 5-digit numbers as zip', function() {
-    var result = parser.pinchZip('Boston, MA 002134');
-    assert(result.zip == null);
-    assert(result.rest == 'boston, ma 002134');
-
-    var result = parser.pinchZip('34');
-    assert(result.zip == null);
-    assert(result.rest == '34');
+  it('should find a zip with no spaces before it', function() {
+    var result = parser.pinchZip('aberdeen,sd57401');
+    assert(result.zip == '57401');
+    assert(result.rest == 'aberdeen sd');
   });
-
 
 });
 
@@ -296,17 +327,7 @@ describe('parseLocation', function() {
     assert(loc.state == "IL");
     assert(loc.zip == undefined);
 
-    var loc = parser.parseLocation("chicago,il");
-    assert(loc.city == "chicago");
-    assert(loc.state == "IL");
-    assert(loc.zip == undefined);
-
     var loc = parser.parseLocation("las vegas, new mexico");
-    assert(loc.city == "las vegas");
-    assert(loc.state == "NM");
-    assert(loc.zip == undefined);
-
-    var loc = parser.parseLocation("las vegas,new mexico");
     assert(loc.city == "las vegas");
     assert(loc.state == "NM");
     assert(loc.zip == undefined);
@@ -320,6 +341,35 @@ describe('parseLocation', function() {
     assert(loc.city == "st louis");
     assert(loc.state == "MO");
     assert(loc.zip == undefined);
+
+    var loc = parser.parseLocation('jonesboro, Ar. 72401');
+    assert(loc.city == "jonesboro");
+    assert(loc.state == "AR");
+    assert(loc.zip == "72401");
   });
+
+  it('should handle no spacing', function() {
+    var loc = parser.parseLocation('jonesboro,Ar.72401');
+    assert(loc.city == "jonesboro");
+    assert(loc.state == "AR");
+    assert(loc.zip == "72401");
+
+    var loc = parser.parseLocation('jonesboro,Ar.72401');
+    assert(loc.city == "jonesboro");
+    assert(loc.state == "AR");
+    assert(loc.zip == "72401");
+
+    var loc = parser.parseLocation("chicago,il");
+    assert(loc.city == "chicago");
+    assert(loc.state == "IL");
+    assert(loc.zip == undefined);
+
+    var loc = parser.parseLocation("las vegas,new mexico");
+    assert(loc.city == "las vegas");
+    assert(loc.state == "NM");
+    assert(loc.zip == undefined);
+
+  });
+
 });
 
