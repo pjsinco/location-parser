@@ -154,6 +154,7 @@ describe('pinchState', function() {
     var result = parser.pinchState('illinois new jersey illinois xissouri');
     assert(result.state.length == 0);
     assert(result.rest == 'illinois new jersey illinois xissouri');
+    
   });
 
   describe('state abbreviations', function() {
@@ -246,6 +247,9 @@ describe('pinchState', function() {
 
       assert(parser.pinchState('hellokansas').state == '');
       assert(parser.pinchState('hellokansas').rest == 'hellokansas');
+
+      assert(parser.pinchState('indianapolis').state == '');
+      assert(parser.pinchState('indianapolis').rest == 'indianapolis');
     });
 
     it('should find a state when the state contains another state name', function() {
@@ -346,6 +350,13 @@ describe('parseLocation', function() {
     assert(loc.city == "jonesboro");
     assert(loc.state == "AR");
     assert(loc.zip == "72401");
+  });
+
+  it('should not be confused by cities with state names embedded in them', function() {
+    var loc = parser.parseLocation('indianapolis');
+    assert(loc.city == "indianapolis");
+    assert(loc.state == '');
+    assert(loc.zip == undefined);
   });
 
   it('should handle no spacing', function() {

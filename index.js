@@ -99,7 +99,8 @@ module.exports = {
 
     // First try the last word ...
     stateFromOneWord = states.filter(function(state) {
-      return lastWord.indexOf(state.name.toLowerCase()) === 0;
+      var re = new RegExp('^' + state.name.toLowerCase() + '$', "gi");
+      return re.test(lastWord);
     });
 
     // If that fails, try the last 2 words ...
