@@ -102,6 +102,7 @@ module.exports = {
       return re.test(lastWord);
     });
 
+
     // If that fails, try the last 2 words ...
     if (stateFromOneWord.length === 0) {
       var lastTwoWords = this.lastTwoTokens(tokens);
@@ -117,7 +118,7 @@ module.exports = {
           return lastTwoWords.indexOf(state.name.toLowerCase()) === 0 &&
             Boolean(state.name.match(/\s/g)); // make sure state has 2 words
         });
-        state = stateFromTwoWords;
+        state = (stateFromTwoWords.length === 0 ? '' : stateFromTwoWords);
 
         if (state.length > 0) {
           rest = tokens.slice(0, -2).join(' ');

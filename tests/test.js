@@ -292,6 +292,22 @@ describe('pinchState', function() {
 
   });
 
+  describe('passing in value without a state', function() {
+    it('should return the value when there\'s no state', function() {
+      var result = parser.pinchState('chicago');
+      assert(result.state == '');
+      assert(result.rest == 'chicago');
+
+      var result = parser.pinchState('lees summit');
+      assert(result.state == '');
+      assert(result.rest == 'lees summit');
+
+      var result = parser.pinchState('indianapolis');
+      assert(result.state == '');
+      assert(result.rest == 'indianapolis');
+
+    });
+  });
 });
 
 describe('getStateAbbrev', function() {
@@ -382,5 +398,17 @@ describe('parseLocation', function() {
 
   });
 
+  it('should handle two-word cities with no state', function() {
+      var result = parser.parseLocation('lees summit');
+      assert(result.state == '');
+      assert(result.city == 'lees summit');
+
+      var result = parser.parseLocation('lees summit,');
+      assert(result.state == '');
+      assert(result.city == 'lees summit');
+
+  });
+
+  
 });
 
