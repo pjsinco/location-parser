@@ -5,12 +5,6 @@ var states = madison.states;
 module.exports = {
 
   /* NOT USED */
-  hasZip: function(searchLocation) {
-    var matches = searchLocation.match(/\d+/g);
-    return matches && matches.length > 0;
-  },
-
-  /* NOT USED */
   getStateAbbrev: function(fullStateName) {
     var stateAbbrev;
 
@@ -225,7 +219,11 @@ module.exports = {
     var pinchedZip = this.pinchZip(value);
 
     if (pinchedZip.zip) {
-      zip = pinchedZip.zip;
+      return {
+        zip: pinchedZip.zip,
+        city: '',
+        state: null,
+      };
     } else {
       zip = null;
     }
