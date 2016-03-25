@@ -155,7 +155,7 @@ module.exports = {
    *   Ft. -> Fort
    *
    */
-  transformCity(city) {
+  transformCity: function (city) {
     
     if (city.match(/^st\b/gi)) {
       return city.replace(/^(st)\b/gi, 'Saint');
