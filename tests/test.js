@@ -363,9 +363,10 @@ describe('parseLocation', function() {
     assert(loc.zip == undefined);
 
     var loc = parser.parseLocation('jonesboro, Ar. 72401');
-    assert(loc.city == "");
-    assert(loc.state == null);
+    assert(loc.city == "jonesboro");
+    assert(loc.state == 'AR');
     assert(loc.zip == "72401");
+
   });
 
   it('should not be confused by cities with state names embedded in them', function() {
@@ -377,13 +378,13 @@ describe('parseLocation', function() {
 
   it('should handle no spacing', function() {
     var loc = parser.parseLocation('jonesboro,Ar.72401');
-    assert(loc.city == "");
-    assert(loc.state == null);
+    assert(loc.city == "jonesboro");
+    assert(loc.state == 'AR');
     assert(loc.zip == "72401");
 
     var loc = parser.parseLocation('jonesboro,Ar.72401');
-    assert(loc.city == "");
-    assert(loc.state == null);
+    assert(loc.city == "jonesboro");
+    assert(loc.state == 'AR');
     assert(loc.zip == "72401");
 
     var loc = parser.parseLocation("chicago,il");

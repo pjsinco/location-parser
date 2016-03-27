@@ -218,15 +218,22 @@ module.exports = {
 
     var pinchedZip = this.pinchZip(value);
 
+//    if (pinchedZip.zip) {
+//      return {
+//        zip: pinchedZip.zip,
+//        city: '',
+//        state: null,
+//      };
+//    } else {
+//      zip = null;
+//    }
+
     if (pinchedZip.zip) {
-      return {
-        zip: pinchedZip.zip,
-        city: '',
-        state: null,
-      };
+      zip = pinchedZip.zip;
     } else {
       zip = null;
     }
+
 
     var pinchedState = this.pinchState(pinchedZip.rest);
 
