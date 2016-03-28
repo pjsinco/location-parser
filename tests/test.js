@@ -14,27 +14,32 @@ describe('strip', function() {
 
 });
 
-describe.skip('transformCity', function() {
+describe('transformCity', function() {
 
   it('should change st to saint', function() {
     var city = parser.transformCity("St Louis");
     assert(city == "Saint Louis");
 
     var city = parser.transformCity("st louis");
-    assert(city == "Saint Louis");
+    assert(city == "Saint louis");
   });
 
-  it.skip('should change mt to mount', function() {
+  it('should change mt to mount', function() {
+    var city = parser.transformCity("mt. union");
+    assert(city == "Mount union");
   });
 
-  it.skip('should change mt to mount', function() {
+  it('should only find an alias at the beginning of a string', function() {
+    var city = parser.transformCity("louis st.");
+    assert(city == "louis st.");
   });
 
-  it.skip('should only find an alias at the beginning of a string', function() {
+
+  it.skip('should return a blank string when passed a blank string', function() {
+    var city = parser.transformCity("");
+    assert(city == "");
   });
 
-  it.skip('should only find an alias at the beginning of a string', function() {
-  });
 });
 
 describe('tokenize', function() {
@@ -415,13 +420,23 @@ describe('parseLocation', function() {
   });
 
   it('should handle two-word cities with no state', function() {
-      var result = parser.parseLocation('lees summit');
-      assert(result.state == '');
-      assert(result.city == 'Lees Summit');
+    var result = parser.parseLocation('lees summit');
+    assert(result.state == '');
+    assert(result.city == 'Lees Summit');
 
-      var result = parser.parseLocation('lees summit,');
-      assert(result.state == '');
-      assert(result.city == 'Lees Summit');
+    var result = parser.parseLocation('lees summit,');
+    assert(result.state == '');
+    assert(result.city == 'Lees Summit');
+  });
+
+  it('should transform st louis', function() {
+    var result = parser.parseLocation('st louis, mo', true);
+    assert(result.state == 'MO');
+    assert(result.city == 'Saint Louis');
+
+    var result = parser.parseLocation('st. louis', true);
+    assert(result.state == '');
+    assert(result.city == 'Saint Louis');
   });
 
   

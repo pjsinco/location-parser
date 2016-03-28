@@ -150,16 +150,18 @@ module.exports = {
    *
    */
   transformCity: function (city) {
+
+    var transformedCity;
     
-    if (city.match(/^st\b/gi)) {
-      return city.replace(/^(st)\b/gi, 'Saint');
-    } else if (city.match(/^mt\b/gi)) {
-      return city.replace(/^(mt)\b/gi, 'Mount');
-    } else if (city.match(/^ft\b/gi)) {
-      return city.replace(/^(ft)\b/gi, 'Fort');
+    if (city.match(/^(st\.?)\s/gi)) {
+      transformedCity = city.replace(/^(st\.?)\s/gi, 'Saint ');
+    } else if (city.match(/^(mt\.?)\s/gi)) {
+      transformedCity = city.replace(/^(mt\.?)\s/gi, 'Mount ');
+    } else if (city.match(/^(ft\.?)\s/gi)) {
+      transformedCity = city.replace(/^(ft\.?)\s/gi, 'Fort ');
     }
 
-    return city;
+    return transformedCity || city;
   },
 
   /**
