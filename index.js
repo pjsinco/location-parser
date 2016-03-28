@@ -162,6 +162,17 @@ module.exports = {
     return city;
   },
 
+  /**
+   * Source:
+   * http://stackoverflow.com/questions/196972/
+   *    convert-string-to-title-case-with-javascript
+   */
+  titleCase: function(value) {
+    return value.replace(/\w\S*/gi, function(text) {
+      return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
+    });
+  },
+
   pinchZip: function(value) {
     var stripped = this.strip(value);
     var tokens = this.tokenize(stripped);
@@ -238,8 +249,9 @@ module.exports = {
     var pinchedState = this.pinchState(pinchedZip.rest);
 
     return {
-      city: (resolveCity ? this.transformCity(pinchedState.rest) :
-        pinchedState.rest),
+      city: this.titleCase(
+        resolveCity ? this.transformCity(pinchedState.rest) : pinchedState.rest
+      ),
       state: pinchedState.state,
       zip: zip
     };

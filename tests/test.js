@@ -21,19 +21,19 @@ describe.skip('transformCity', function() {
     assert(city == "Saint Louis");
 
     var city = parser.transformCity("st louis");
-    assert(city == "Saint louis");
+    assert(city == "Saint Louis");
   });
 
-  it('should change mt to mount', function() {
+  it.skip('should change mt to mount', function() {
   });
 
-  it('should change mt to mount', function() {
+  it.skip('should change mt to mount', function() {
   });
 
-  it('should only find an alias at the beginning of a string', function() {
+  it.skip('should only find an alias at the beginning of a string', function() {
   });
 
-  it('should only find an alias at the beginning of a string', function() {
+  it.skip('should only find an alias at the beginning of a string', function() {
   });
 });
 
@@ -339,31 +339,46 @@ describe('pinchZip', function() {
 
 });
 
+describe('titleCase', function() {
+
+  it('should capitalize the first letter of every word', function() {
+    var titleCased = parser.titleCase('aberdeen');
+    assert(titleCased === 'Aberdeen');
+
+    var titleCased = parser.titleCase('las vegas');
+    assert(titleCased === 'Las Vegas');
+
+    var titleCased = parser.titleCase('');
+    assert(titleCased === '');
+  });
+
+});
+
 describe('parseLocation', function() {
   
   it('should handle a value with a comma', function() {
     var loc = parser.parseLocation("chicago, il");
-    assert(loc.city == "chicago");
+    assert(loc.city == "Chicago");
     assert(loc.state == "IL");
     assert(loc.zip == undefined);
 
     var loc = parser.parseLocation("las vegas, new mexico");
-    assert(loc.city == "las vegas");
+    assert(loc.city == "Las Vegas");
     assert(loc.state == "NM");
     assert(loc.zip == undefined);
 
     var loc = parser.parseLocation("green, ks");
-    assert(loc.city == "green");
+    assert(loc.city == "Green");
     assert(loc.state == "KS");
     assert(loc.zip == undefined);
 
     var loc = parser.parseLocation("st. louis,mo");
-    assert(loc.city == "st louis");
+    assert(loc.city == "St Louis");
     assert(loc.state == "MO");
     assert(loc.zip == undefined);
 
     var loc = parser.parseLocation('jonesboro, Ar. 72401');
-    assert(loc.city == "jonesboro");
+    assert(loc.city == "Jonesboro");
     assert(loc.state == 'AR');
     assert(loc.zip == "72401");
 
@@ -371,29 +386,29 @@ describe('parseLocation', function() {
 
   it('should not be confused by cities with state names embedded in them', function() {
     var loc = parser.parseLocation('indianapolis');
-    assert(loc.city == "indianapolis");
+    assert(loc.city == "Indianapolis");
     assert(loc.state == '');
     assert(loc.zip == undefined);
   });
 
   it('should handle no spacing', function() {
     var loc = parser.parseLocation('jonesboro,Ar.72401');
-    assert(loc.city == "jonesboro");
+    assert(loc.city == "Jonesboro");
     assert(loc.state == 'AR');
     assert(loc.zip == "72401");
 
     var loc = parser.parseLocation('jonesboro,Ar.72401');
-    assert(loc.city == "jonesboro");
+    assert(loc.city == "Jonesboro");
     assert(loc.state == 'AR');
     assert(loc.zip == "72401");
 
     var loc = parser.parseLocation("chicago,il");
-    assert(loc.city == "chicago");
+    assert(loc.city == "Chicago");
     assert(loc.state == "IL");
     assert(loc.zip == undefined);
 
     var loc = parser.parseLocation("las vegas,new mexico");
-    assert(loc.city == "las vegas");
+    assert(loc.city == "Las Vegas");
     assert(loc.state == "NM");
     assert(loc.zip == undefined);
 
@@ -402,12 +417,11 @@ describe('parseLocation', function() {
   it('should handle two-word cities with no state', function() {
       var result = parser.parseLocation('lees summit');
       assert(result.state == '');
-      assert(result.city == 'lees summit');
+      assert(result.city == 'Lees Summit');
 
       var result = parser.parseLocation('lees summit,');
       assert(result.state == '');
-      assert(result.city == 'lees summit');
-
+      assert(result.city == 'Lees Summit');
   });
 
   
