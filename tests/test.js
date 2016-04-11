@@ -12,6 +12,16 @@ describe('strip', function() {
     assert(stripped == "St Louis Mo");
   });
 
+  it('should not strip hyphens', function() {
+    var stripped = parser.strip("winston-salem");
+    assert(stripped == "winston-salem");
+
+    var stripped = parser.strip("foo-bar-baz-qux");
+    assert(stripped == "foo-bar-baz-qux");
+
+    var stripped = parser.strip("winston-salem, nc");
+    assert(stripped == "winston-salem nc");
+  });
 });
 
 describe('transformCity', function() {
@@ -33,7 +43,6 @@ describe('transformCity', function() {
     var city = parser.transformCity("louis st.");
     assert(city == "louis st.");
   });
-
 
   it.skip('should return a blank string when passed a blank string', function() {
     var city = parser.transformCity("");
@@ -355,9 +364,19 @@ describe('titleCase', function() {
 
     var titleCased = parser.titleCase('');
     assert(titleCased === '');
+
+  });
+
+  it('should capitalize words separated by a hyphen', function() {
+    var titleCased = parser.titleCase('winston-salem');
+    assert(titleCased === 'Winston-Salem');
+
+    var titleCased = parser.titleCase('foo-bar-baz-qux');
+    assert(titleCased === 'Foo-Bar-Baz-Qux');
   });
 
 });
+
 
 describe('parseLocation', function() {
   
@@ -386,7 +405,6 @@ describe('parseLocation', function() {
     assert(loc.city == "Jonesboro");
     assert(loc.state == 'AR');
     assert(loc.zip == "72401");
-
   });
 
   it('should not be confused by cities with state names embedded in them', function() {
@@ -416,7 +434,6 @@ describe('parseLocation', function() {
     assert(loc.city == "Las Vegas");
     assert(loc.state == "NM");
     assert(loc.zip == undefined);
-
   });
 
   it('should handle two-word cities with no state', function() {
@@ -439,6 +456,11 @@ describe('parseLocation', function() {
     assert(result.city == 'Saint Louis');
   });
 
-  
+  it('should handle a hyphenated city', function() {
+    var loc = parser.parseLocation('winston-salem, nc');
+    assert(loc.state == 'NC');
+    assert(loc.city == 'Winston-Salem');
+  });
+
 });
 

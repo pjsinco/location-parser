@@ -58,7 +58,8 @@ module.exports = {
 
   strip: function(value) {
     var commaSpaceStripped = value.replace(/\s+|,/gm, ' ').trim();
-    var punctStripped = commaSpaceStripped.replace(/[.\/#!$%\^&\*;:{}=\-_`~()]/g, '').trim();
+    //var punctStripped = commaSpaceStripped.replace(/[.\/#!$%\^&\*;:{}=\-_`~()]/g, '').trim();
+    var punctStripped = commaSpaceStripped.replace(/[.\/#!$%\^&\*;:{}=_`~()]/g, '').trim();
     var withStragglersGrouped = punctStripped.replace(/(\w)\s(\w)$/g, '$1$2');
     return withStragglersGrouped.replace(/\s{2,}/g, ' ');
   },
@@ -170,9 +171,25 @@ module.exports = {
    *    convert-string-to-title-case-with-javascript
    */
   titleCase: function(value) {
-    return value.replace(/\w\S*/gi, function(text) {
-      return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
-    });
+
+    var titleCased;
+
+    if (/-/g.test(value)) {
+      var split= value.split('-');
+      titleCased = split.map(function (text) {
+        return this.makeTitleCase(text);
+      }, this).join('-');
+    } else {
+      titleCased = value.replace(/\w\S*/gi, function(text) {
+        return this.makeTitleCase(text);
+      }.bind(this));
+    }
+
+    return titleCased;
+  },
+
+  makeTitleCase: function(text) {
+    return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
   },
 
   pinchZip: function(value) {
